@@ -27,3 +27,4 @@ def test_content(response):
 def test_get_token():
     fn = '/Users/luiscberrocal/PycharmProjects/emr_sdk/.env/staging_config.json'
     client = EMRWebClient(filename=fn)
+    assert client.token is not None
