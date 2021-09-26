@@ -26,7 +26,6 @@ class EMRWebClient:
         return credentials
 
     def get_clinic(self, clinic_id):
-        # const headers = {headers: {"Authorization": `Bearer ${JWTToken}`}}
         url = f'{self.base_url}/clinic/api/v1/clinic/{clinic_id}'
         response = requests.get(url, headers=self.headers)
         data = None
