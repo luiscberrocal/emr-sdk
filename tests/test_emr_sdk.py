@@ -34,7 +34,7 @@ def test_get_clinic(emr_client):
 def test_get_clinic_invalid_id(emr_client):
     clinic_data = emr_client.get_clinic(19000)
     assert clinic_data is None
-    assert len(emr_client.errors) == 1
-    assert emr_client.errors[0]['method'] == 'get_clinic'
-    assert emr_client.errors[0]['status_code'] == 404
-    assert 'Not found' in emr_client.errors[0]['message']
+    assert len(emr_client.errors()) == 1
+    assert emr_client.errors()[0]['method'] == 'get_clinic'
+    assert emr_client.errors()[0]['status_code'] == 404
+    assert 'Not found' in emr_client.errors()[0]['message']

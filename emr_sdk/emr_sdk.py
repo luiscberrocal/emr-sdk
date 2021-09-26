@@ -1,6 +1,25 @@
 """Main module."""
 import json
+from datetime import datetime
+
 import requests
+
+
+class ErrorHandler:
+
+    def __init__(self, **kwargs):
+        self.auto_reset = kwargs.get('auto_reset', False)
+        self.errors = list()
+
+    def handle_error(self, caller_function, response):
+        if self.auto_reset:
+            self.errors.clear()
+        error = dict()
+        error['method'] = caller_function
+        error['status_code'] = response.status_code
+        error['message'] = response.text
+        error['time_stamp'] = datetime.now().strftime('%Y-%m-%d %H:%M:$S')
+        self.errors.append(error)
 
 
 class EMRWebClient:
@@ -12,7 +31,7 @@ class EMRWebClient:
         self.token = self._get_token_data(**configuration)
         self.headers = {'Authorization': f'Bearer {self.token}',
                         'content-type': 'application/json'}
-        self.errors = list()
+        self.error_handler = ErrorHandler()
 
     def _get_token_data(self, username, password, token_key):
         url = f'{self.base_url}/api/v1/token/'
@@ -25,6 +44,9 @@ class EMRWebClient:
             credentials = json.load(json_file)
         return credentials
 
+    def errors(self):
+        return self.error_handler.errors
+
     def get_clinic(self, clinic_id):
         url = f'{self.base_url}/clinic/api/v1/clinic/{clinic_id}'
         response = requests.get(url, headers=self.headers)
@@ -32,11 +54,5 @@ class EMRWebClient:
         if response.status_code == 200:
             data = json.loads(response.text)
         else:
-            error = dict()
-            error['method'] = 'get_clinic'
-            error['status_code'] = response.status_code
-            error['message'] = response.text
-            self.errors.append(error)
+            self.error_handler.handle_error('get_clinic', response)
         return data
-
-
