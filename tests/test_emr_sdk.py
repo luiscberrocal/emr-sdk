@@ -26,5 +26,16 @@ def test_content(response):
 
 def test_get_token():
     fn = '/Users/luiscberrocal/PycharmProjects/emr_sdk/.env/staging_config.json'
+    fn = '/Users/luiscberrocal/PycharmProjects/emr_sdk/.env/local_config.json'
     client = EMRWebClient(filename=fn)
     assert client.token is not None
+    assert len(client.token) > 20
+    print(f'>>>> {client.token}')
+
+
+def test_get_clinic():
+    fn = '/Users/luiscberrocal/PycharmProjects/emr_sdk/.env/local_config.json'
+    client = EMRWebClient(filename=fn)
+    response = client.get_clinic(1)
+    assert response['name'] == 'Next Generation Clinic'
+
