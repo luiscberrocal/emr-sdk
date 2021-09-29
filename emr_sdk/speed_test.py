@@ -10,9 +10,9 @@ import speedtest
 
 
 def write_header(output_filename):
-    with open(output_filename, 'w') as csvfile:
-        spamwriter = csv.writer(csvfile)
-        spamwriter.writerow(['computer', 'ssid', 'time_stamp', 'Download MB/s',
+    with open(output_filename, 'w') as csv_file:
+        csv_riter = csv.writer(csv_file)
+        csv_riter.writerow(['computer', 'ssid', 'time_stamp', 'Download MB/s',
                              'Upload MS/s', 'Comment'])
 
 
@@ -32,14 +32,19 @@ def measure_speed(output_filename, computer, ssid, frequency=600,
             upload = 0
             log_comment = 'Error'
 
-        print(f'{i}/{measurement_count}. Download: {download} MB/s {comment}')
-        print(f'       Upload  : {upload} MB/s')
-        print(f'Waiting {waiting_for/60} min')
-        print('-' * 50)
-        with open(output_filename, 'a') as csvfile:
-            spamwriter = csv.writer(csvfile)
-            spamwriter.writerow([computer, ssid, time_stamp, download, upload, log_comment])
+        speed_data = [computer, ssid, time_stamp, download, upload, log_comment]
+        print_to_console(i, measurement_count, download, upload, log_comment, waiting_for)
+        with open(output_filename, 'a') as csv_file:
+            csv_writer = csv.writer(csv_file)
+            csv_writer.writerow(speed_data)
         sleep(waiting_for)
+
+
+def print_to_console(i, measurement_count, download, upload, log_comment, waiting_for):
+    print(f'{i}/{measurement_count}. Download: {download} MB/s {log_comment}')
+    print(f'       Upload  : {upload} MB/s')
+    print(f'Waiting {waiting_for / 60} min')
+    print('-' * 50)
 
 
 if __name__ == '__main__':
@@ -49,4 +54,7 @@ if __name__ == '__main__':
     print(computer_name)
     ssid = 'New Beggining'
     comment = '2.4GHz off'
-    measure_speed(output_fn, computer_name, ssid, comment=comment)
+    count = 2
+    frequency_secs = 10
+    measure_speed(output_fn, computer_name, ssid, comment=comment, frequency=frequency_secs,
+                  measurement_count=count)
