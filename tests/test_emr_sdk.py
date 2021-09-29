@@ -8,23 +8,33 @@ from emr_sdk import emr_sdk
 from emr_sdk.emr_sdk import EMRWebClient
 
 
-@pytest.fixture
-def response():
+@pytest.fixture(scope='session')
+def emr_client():
     """Sample pytest fixture.
 
     See more at: http://doc.pytest.org/en/latest/fixture.html
     """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
-
-
-def test_content(response):
-    """Sample pytest test function with the pytest fixture as an argument."""
-    # from bs4 import BeautifulSoup
-    # assert 'GitHub' in BeautifulSoup(response.content).title.string
-
-
-def test_get_token():
     fn = '/Users/luiscberrocal/PycharmProjects/emr_sdk/.env/staging_config.json'
+    fn = '/Users/luiscberrocal/PycharmProjects/emr_sdk/.env/local_config.json'
     client = EMRWebClient(filename=fn)
-    assert client.token is not None
+    return client
+
+
+def test_get_token(emr_client):
+    assert emr_client.token is not None
+    assert len(emr_client.token) > 20
+    print(f'>>>> {emr_client.token}')
+
+
+def test_get_clinic(emr_client):
+    response = emr_client.get_clinic(1)
+    assert response['name'] == 'Next Generation Clinic'
+
+
+def test_get_clinic_invalid_id(emr_client):
+    clinic_data = emr_client.get_clinic(19000)
+    assert clinic_data is None
+    assert len(emr_client.errors()) == 1
+    assert emr_client.errors()[0]['method'] == 'get_clinic'
+    assert emr_client.errors()[0]['status_code'] == 404
+    assert 'Not found' in emr_client.errors()[0]['message']
