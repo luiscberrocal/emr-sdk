@@ -1,4 +1,6 @@
 import csv
+import os
+import platform
 import random
 from datetime import datetime
 from pathlib import Path
@@ -42,5 +44,6 @@ def measure_speed(output_filename, computer, ssid, frequency=600, measurement_co
 if __name__ == '__main__':
     output_fn = Path(__file__).parent.parent / \
                 f'output/speed_test_mac_{datetime.now().strftime("%Y-%m-%d_%H%M")}.csv'
-
-    measure_speed(output_fn, 'Pop OS', 'New Begining')
+    computer_name = platform.node()
+    print(computer_name)
+    measure_speed(output_fn, computer_name, 'COWIFI')
