@@ -22,13 +22,14 @@ def measure_speed(output_filename, computer, ssid, frequency):
             dnld = speed.download() / 1024 / 1024
             upld = speed.upload() / 1024 / 1024
             comment = ''
-            print(f'{i}. Download: {dnld} MB/s')
-            print(f'     Upload  : {upld} MB/s')
-            print('-' * 50)
         except speedtest.SpeedtestBestServerFailure:
             dnld = 0
             upld = 0
             comment = 'Error'
+
+        print(f'{i}. Download: {dnld} MB/s {comment}')
+        print(f'     Upload  : {upld} MB/s')
+        print('-' * 50)
         with open(output_filename, 'a') as csvfile:
             spamwriter = csv.writer(csvfile)
             spamwriter.writerow([computer, ssid, time_stamp, dnld, upld, comment])
@@ -39,4 +40,4 @@ if __name__ == '__main__':
     output_fn = Path(__file__).parent.parent / \
                 f'output/speed_test_mac_{datetime.now().strftime("%Y-%m-%d_%H%M")}.csv'
 
-    measure_speed(output_fn, 'MacBook Pro', 'New Beginning', 10)
+    measure_speed(output_fn, 'MacBook Pro', 'CO-WIFI', 10)
