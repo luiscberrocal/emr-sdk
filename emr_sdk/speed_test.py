@@ -16,28 +16,29 @@ def write_header(output_filename):
                              'Upload MS/s', 'Comment'])
 
 
-def measure_speed(output_filename, computer, ssid, frequency=600, measurement_count=100):
+def measure_speed(output_filename, computer, ssid, frequency=600,
+                  measurement_count=100, comment=''):
     write_header(output_filename)
     for i in range(1, measurement_count):
         time_stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         waiting_for = frequency+random.randint(60, 120)
         try:
             speed = speedtest.Speedtest()
-            dnld = speed.download() / 1024 / 1024
-            upld = speed.upload() / 1024 / 1024
-            comment = ''
+            download = speed.download() / 1024 / 1024
+            upload = speed.upload() / 1024 / 1024
+            log_comment = comment
         except speedtest.SpeedtestBestServerFailure:
-            dnld = 0
-            upld = 0
-            comment = 'Error'
+            download = 0
+            upload = 0
+            log_comment = 'Error'
 
-        print(f'{i}/{measurement_count}. Download: {dnld} MB/s {comment}')
-        print(f'       Upload  : {upld} MB/s')
+        print(f'{i}/{measurement_count}. Download: {download} MB/s {comment}')
+        print(f'       Upload  : {upload} MB/s')
         print(f'Waiting {waiting_for/60} min')
         print('-' * 50)
         with open(output_filename, 'a') as csvfile:
             spamwriter = csv.writer(csvfile)
-            spamwriter.writerow([computer, ssid, time_stamp, dnld, upld, comment])
+            spamwriter.writerow([computer, ssid, time_stamp, download, upload, log_comment])
         sleep(waiting_for)
 
 
@@ -46,4 +47,6 @@ if __name__ == '__main__':
                 f'output/speed_test_mac_{datetime.now().strftime("%Y-%m-%d_%H%M")}.csv'
     computer_name = platform.node()
     print(computer_name)
-    measure_speed(output_fn, computer_name, 'COWIFI')
+    ssid = 'New Beggining'
+    comment = '2.4GHz off'
+    measure_speed(output_fn, computer_name, ssid, comment=comment)
