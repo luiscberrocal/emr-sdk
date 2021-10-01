@@ -1,0 +1,24 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379/0
+
+# Celery
+# ------------------------------------------------------------------------------
+
+# Flower
+CELERY_FLOWER_USER=XHwZBanksmxOADsQWujGUMucegvxQSZc
+CELERY_FLOWER_PASSWORD=AOPgBHcEhZKYi4d368uSNQdNCpBu6id18huLdSSBcfbUJpqahX2M3Fx8cnY7FBxk
+
+JOT_FORM_API_KEY=1636ce1cfd79f11447af5d5a2af74d6f
+
+ENVIRONMENT_NAME=DEVELOPMENT
+ENVIRONMENT_COLOR=Green
+
+TRAVIS_CI=False
+STAR_WARS=True
+DATABASE_URL=
+CELERY_BROKER_URL=
