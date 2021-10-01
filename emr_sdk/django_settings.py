@@ -4,7 +4,7 @@ from pathlib import Path
 import environ
 from dotenv import load_dotenv
 
-env_path = Path(__file__).parent.parent / '.env/.django'
+env_path = Path(__file__).parent / '.django'
 
 load_dotenv(dotenv_path=env_path)
 
