@@ -15,13 +15,11 @@ def load_environment_variables(environ_files):
         load_dotenv(dotenv_path=env_data_file)
 
 
-def read_settings(settings_file, module_name='my_module'):
+def read_settings(settings_file, module_name='my_module', **kwargs):
+    verbose = kwargs.get('verbose', False)
     spec = importlib.util.spec_from_file_location(module_name, settings_file)
     my_module = importlib.util.module_from_spec(spec)
-    try:
-        importlib.reload(my_module)
-    except ImportError:
-        print('>>>>>>>>>>')
+
     spec.loader.exec_module(my_module)
     settings = dict()
     module_attributes = dir(my_module)
@@ -29,12 +27,12 @@ def read_settings(settings_file, module_name='my_module'):
         data_type = type(getattr(my_module, att))
         accepted_types = [str, int, dict, list, set, bool, environ.environ.Path, pathlib.PosixPath]
         record = data_type in accepted_types and '__' not in att
-        rec = '[x]' if record else '[ ]'
-        print(f'{i} {att:30} {data_type}  {rec}')
+        if verbose:
+            rec = '[x]' if record else '[ ]'
+            print(f'{i} {att:30} {data_type}  {rec}')
         if record:
             settings[att] = getattr(my_module, att)
 
-    del (my_module)
     return settings
 
 
@@ -45,9 +43,8 @@ if __name__ == '__main__':
     load_environment_variables(configuration['extras']['environs'])
     base_settings = read_settings(configuration['base_settings']['file'],
                                   module_name='base_settings')
-    # print(base_settings)
+
     settings_2 = read_settings(configuration['other_settings']['file'], module_name='base_settings_2')
-    print(settings_2)
     differences = dict()
 
     for i, (key, item) in enumerate(base_settings.items()):
